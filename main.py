@@ -1,5 +1,10 @@
-import requests
+from flask import Flask, jsonify
 
-r = requests.get('https://t.me/K_PY0')
-print(r.text)
-print('\n\nTest')
+app = Flask(__name__)
+
+@app.route('/welcome', methods=['GET'])
+def welcome():
+    return jsonify({"status": "welcome"})
+
+if __name__ == '__main__':
+    app.run(debug=True)

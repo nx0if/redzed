@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/welcome', methods=['GET'])
 def welcome():
-    return jsonify({"status": "welcome"})
+    return jsonify({"status": "welcome to this site"})
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

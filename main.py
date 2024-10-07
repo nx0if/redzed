@@ -9,18 +9,17 @@ import uid_generator_pb2
 
 app = Flask(__name__)
 
-# Helper function to create protobuf message
 def create_protobuf(saturn_, garena):
     message = uid_generator_pb2.uid_generator()
     message.saturn_ = saturn_
     message.garena = garena
     return message.SerializeToString()
 
-# Convert protobuf data to hex
+
 def protobuf_to_hex(protobuf_data):
     return binascii.hexlify(protobuf_data).decode()
 
-# Encrypt data using AES encryption
+
 def encrypt_aes(hex_data, key, iv):
     key = key.encode()[:16]
     iv = iv.encode()[:16]
@@ -29,7 +28,7 @@ def encrypt_aes(hex_data, key, iv):
     encrypted_data = cipher.encrypt(padded_data)
     return binascii.hexlify(encrypted_data).decode()
 
-# Perform the like request
+
 async def like(id, session, token):
     like_url = 'https://clientbp.ggblueshark.com/LikeProfile'
     headers = {
@@ -51,14 +50,14 @@ async def like(id, session, token):
         response_text = await response.text()
         return {'status_code': status_code, 'response_text': response_text}
 
-# Fetch tokens from external service
+
 async def get_tokens(session):
     url = 'https://get-token-f5-3h5h.onrender.com/token'
     async with session.get(url) as response:
         tokens = await response.json()
         return [token['token'] for token in tokens]
 
-# Async function to send like requests
+
 async def sendlike(uid):
     saturn_ = int(uid)
     garena = 1
@@ -74,11 +73,11 @@ async def sendlike(uid):
         results = await asyncio.gather(*tasks)
     return results
 
-# Flask route to handle GET requests with UID as a query parameter
+
 @app.route('/like', methods=['GET'])
 def like_endpoint():
     try:
-        uid = request.args.get('uid')  # Extract UID from URL query parameters
+        uid = request.args.get('uid')
         if not uid:
             return jsonify({'error': 'Missing uid parameter'}), 400
         

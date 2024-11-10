@@ -1,5 +1,2 @@
-flask
-asyncio
-aiohttp
-pycryptodome
-protobuf
+telebot
+requests

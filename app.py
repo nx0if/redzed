@@ -1,7 +1,10 @@
-import telebot
+from flask import Flask, render_template, request
 import requests
 import time
 from datetime import datetime
+
+app = Flask(__name__)
+
 
 TOKEN = "7186315620:AAHcMIVq8u0y9HpqmoBGjAKGuLyosO68A3c"
 bot = telebot.TeleBot(TOKEN)
@@ -11,6 +14,18 @@ group_active = {}
 user_spam_counts = {}
 user_like_counts = {}
 user_last_used = {}
+
+@app.route('/bot_webhook', methods=['POST'])
+def bot_webhook():
+  bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode('utf-8'))])
+  return 'OK'
+
+
+@app.route('/set_app', methods=['GET'])
+def set_app():
+  bot.remove_webhook()
+  bot.set_webhook("https://" + request.host + "/bot_webhook")
+  return 'Done'
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -290,9 +305,6 @@ def amin_command(message):
     else:
         bot.reply_to(message, "This command is only available to admins.")
 
-while True:
-    try:
-        bot.polling()
-    except Exception as e:
-        print(f"Bot polling encountered an error: {e}")
-        time.sleep(15)
+
+if __name__ == '__main__':
+    app.run(debug=True)
